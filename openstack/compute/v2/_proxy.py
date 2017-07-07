@@ -620,6 +620,22 @@ class Proxy(proxy2.BaseProxy):
         server = self._get_resource(_server.Server, server)
         server.remove_floating_ip(self._session, address)
 
+    def backup_server(self, server, name, backup_type, rotation):
+        """Backup a server
+
+        :param server: Either the ID of a server or a
+                       :class:`~openstack.compute.v2.server.Server` instance.
+        :param name: The name of the backup image.
+        :param backup_type: The type of the backup, for example, daily.
+        :param rotation: The rotation of the back up image, the oldest
+                         image will be removed when image count exceed
+                         the rotation count.
+
+        :returns: None
+        """
+        server = self._get_resource(_server.Server, server)
+        server.backup(self._session, name, backup_type, rotation)
+
     def pause_server(self, server):
         """Pauses a server and changes its status to ``PAUSED``.
 
@@ -774,6 +790,19 @@ class Proxy(proxy2.BaseProxy):
         """
         server = self._get_resource(_server.Server, server)
         server.unshelve(self._session)
+
+    def get_server_console_output(self, server, length=None):
+        """Return the console output for a server.
+
+        :param server: Either the ID of a server or a
+                    :class:`~openstack.compute.v2.server.Server` instance.
+        :param length: Optional number of line to fetch from the end of console
+                    log. All lines will be returned if this is not specified.
+        :returns: The console output as a dict. Control characters will be
+                    escaped to create a valid JSON string.
+        """
+        server = self._get_resource(_server.Server, server)
+        return server.get_console_output(self._session, length=length)
 
     def wait_for_server(self, server, status='ACTIVE', failures=['ERROR'],
                         interval=2, wait=120):
@@ -1056,20 +1085,6 @@ class Proxy(proxy2.BaseProxy):
         """
         return self._get(_hypervisor.Hypervisor, hypervisor)
 
-    def get_service(self, service):
-        """Get a single service
-
-        :param service: The value can be the ID of a serivce or a
-               :class:`~openstack.compute.v2.service.Service`
-               instance.
-
-        :returns:
-            A :class:`~openstack.compute.v2.serivce.Service` object.
-        :raises: :class:`~openstack.exceptions.ResourceNotFound`
-                 when no resource can be found.
-        """
-        return self._get(_service.Service, service)
-
     def force_service_down(self, service, host, binary):
         """Force a service down
 
@@ -1244,3 +1259,26 @@ class Proxy(proxy2.BaseProxy):
         server_id = resource2.Resource._get_id(server)
         return self._list(_volume_attachment.VolumeAttachment, paginated=False,
                           server_id=server_id)
+
+    def migrate_server(self, server):
+        """Migrate a server from one host to another
+
+        :param server: Either the ID of a server or a
+                       :class:`~openstack.compute.v2.server.Server` instance.
+        :returns: None
+        """
+        server = self._get_resource(_server.Server, server)
+        server.migrate(self._session)
+
+    def live_migrate_server(self, server, host=None, force=False):
+        """Migrate a server from one host to target host
+
+        :param server: Either the ID of a server or a
+                       :class:`~openstack.compute.v2.server.Server` instance.
+        :param host: The host to which to migrate the server
+        :param force: Force a live-migration by not verifying the provided
+                      destination host by the scheduler.
+        :returns: None
+        """
+        server = self._get_resource(_server.Server, server)
+        server.live_migrate(self._session, host, force)

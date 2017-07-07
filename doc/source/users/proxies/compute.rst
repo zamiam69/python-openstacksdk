@@ -29,6 +29,7 @@ Server Operations
    .. automethod:: openstack.compute.v2._proxy.Proxy.delete_server_metadata
    .. automethod:: openstack.compute.v2._proxy.Proxy.wait_for_server
    .. automethod:: openstack.compute.v2._proxy.Proxy.create_server_image
+   .. automethod:: openstack.compute.v2._proxy.Proxy.backup_server
 
 Network Actions
 ***************
@@ -61,6 +62,9 @@ Starting, Stopping, etc.
    .. automethod:: openstack.compute.v2._proxy.Proxy.rescue_server
    .. automethod:: openstack.compute.v2._proxy.Proxy.unrescue_server
    .. automethod:: openstack.compute.v2._proxy.Proxy.evacuate_server
+   .. automethod:: openstack.compute.v2._proxy.Proxy.migrate_server
+   .. automethod:: openstack.compute.v2._proxy.Proxy.get_server_console_output
+   .. automethod:: openstack.compute.v2._proxy.Proxy.live_migrate_server
 
 Modifying a Server
 ******************
@@ -103,7 +107,6 @@ Service Operations
 
 .. autoclass:: openstack.compute.v2._proxy.Proxy
 
-   .. automethod:: openstack.compute.v2._proxy.Proxy.get_service
    .. automethod:: openstack.compute.v2._proxy.Proxy.services
    .. automethod:: openstack.compute.v2._proxy.Proxy.enable_service
    .. automethod:: openstack.compute.v2._proxy.Proxy.disable_service

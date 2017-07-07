@@ -318,6 +318,12 @@ class TestComputeProxy(test_proxy_base2.TestProxyBase):
                      method_args=["value", "address"],
                      expected_args=["address"])
 
+    def test_server_backup(self):
+        self._verify("openstack.compute.v2.server.Server.backup",
+                     self.proxy.backup_server,
+                     method_args=["value", "name", "daily", 1],
+                     expected_args=["name", "daily", 1])
+
     def test_server_pause(self):
         self._verify("openstack.compute.v2.server.Server.pause",
                      self.proxy.pause_server,
@@ -401,6 +407,17 @@ class TestComputeProxy(test_proxy_base2.TestProxyBase):
                      self.proxy.unshelve_server,
                      method_args=["value"])
 
+    def test_get_server_output(self):
+        self._verify("openstack.compute.v2.server.Server.get_console_output",
+                     self.proxy.get_server_console_output,
+                     method_args=["value"],
+                     expected_kwargs={"length": None})
+
+        self._verify("openstack.compute.v2.server.Server.get_console_output",
+                     self.proxy.get_server_console_output,
+                     method_args=["value", 1],
+                     expected_kwargs={"length": 1})
+
     def test_availability_zones(self):
         self.verify_list_no_kwargs(self.proxy.availability_zones,
                                    az.AvailabilityZone,
@@ -471,10 +488,6 @@ class TestComputeProxy(test_proxy_base2.TestProxyBase):
         self.verify_get(self.proxy.get_hypervisor,
                         hypervisor.Hypervisor)
 
-    def test_get_service(self):
-        self.verify_get(self.proxy.get_service,
-                        service.Service)
-
     def test_services(self):
         self.verify_list_no_kwargs(self.proxy.services,
                                    service.Service,
@@ -497,3 +510,9 @@ class TestComputeProxy(test_proxy_base2.TestProxyBase):
                      self.proxy.force_service_down,
                      method_args=["value", "host1", "nova-compute"],
                      expected_args=["host1", "nova-compute"])
+
+    def test_live_migrate_server(self):
+        self._verify('openstack.compute.v2.server.Server.live_migrate',
+                     self.proxy.live_migrate_server,
+                     method_args=["value", "host1", "force"],
+                     expected_args=["host1", "force"])
